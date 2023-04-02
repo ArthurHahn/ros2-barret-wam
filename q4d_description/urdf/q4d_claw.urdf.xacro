@@ -1,0 +1,46 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:macro name="claw" params="name length width height mass parent *origin">
+	
+<link name="${name}_link">
+	<visual>
+		<geometry>
+			<box size="${length} ${width} ${height}"/>
+		</geometry>
+			<material name="">
+				<color rgba="1 1 1.0 1"/>
+			</material>
+	</visual>
+	
+	<collision>
+		<geometry>
+			<box size="${length} ${width} ${height}"/>
+		</geometry>
+	</collision>
+	
+	<inertial>
+		<origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+		<mass value="${mass}" />
+		<inertia 
+			ixx="${mass/12*(length*length+height*height)}"
+			ixy="0.0" 
+			ixz="0.0"
+			iyy="${mass/12*(width*width+height*height)}"
+			iyz="0.0"
+			izz="${mass/12*(width*width+length*length)}"/>
+		</inertial>	
+</link>
+	
+<joint name="${name}_joint" type="prismatic">
+	<xacro:insert_block name="origin"/>
+	<parent link="${parent}" />
+	<child link="${name}_link" />
+	<axis xyz="0 1 0" />
+	<limit lower="0.0" upper="0.05" effort="1.0" velocity="10.0"/>
+</joint>
+
+<gazebo reference="${name}_link">
+	<material>Gazebo/Red</material>
+</gazebo>
+
+</xacro:macro>
+</robot>

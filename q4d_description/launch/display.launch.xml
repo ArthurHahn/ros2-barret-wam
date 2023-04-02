@@ -1,0 +1,7 @@
+<launch>
+	<arg name="gui" default="false"/>
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="q4d_origin_publisher" args="--frame-id map --child-frame-id origin_link"/>
+	<node if="$(var gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui"/>
+	<include file="$(find-pkg-share q4d_description)/launch/q4d.launch.xml"/>
+	<node name="rviz" pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share q4d_description)/config/display.rviz"/>
+</launch>
