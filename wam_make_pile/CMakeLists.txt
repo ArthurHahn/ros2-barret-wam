@@ -12,32 +12,50 @@ find_package(tf2_kdl REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(orocos_kdl REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(wam_make_pile src/wam_make_pile.cpp)
-target_include_directories(wam_make_pile PUBLIC
+add_executable(pose_trajectory_publisher src/pose_trajectory_publisher.cpp)
+target_include_directories(pose_trajectory_publisher PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(wam_make_pile PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(pose_trajectory_publisher PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 ament_target_dependencies(
-  wam_make_pile
+  pose_trajectory_publisher
   "rclcpp"
   "tf2_kdl"
   "geometry_msgs"
   "trajectory_msgs"
   "orocos_kdl"
-  "sensor_msgs"
-  "std_msgs"
 )
 
-install(TARGETS wam_make_pile
+install(TARGETS pose_trajectory_publisher
   DESTINATION lib/${PROJECT_NAME})
 
+add_executable(joint_trajectory_publisher src/joint_trajectory_publisher.cpp)
+target_include_directories(joint_trajectory_publisher PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(joint_trajectory_publisher PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  joint_trajectory_publisher
+  "rclcpp"
+  "tf2_kdl"
+  "geometry_msgs"
+  "trajectory_msgs"
+  "orocos_kdl"
+)
+
+install(TARGETS joint_trajectory_publisher
+  DESTINATION lib/${PROJECT_NAME})
+  
 install(DIRECTORY config launch
 	DESTINATION share/${PROJECT_NAME}
-)
+)  
 
 install(PROGRAMS
 	scripts/set_home.sh

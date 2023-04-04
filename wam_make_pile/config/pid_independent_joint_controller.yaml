@@ -1,0 +1,18 @@
+pid_independent_joint_controller:
+        ros__parameters:
+                joints:
+                        - wam_joint_1
+                        - wam_joint_2
+                        - wam_joint_3
+                        - wam_joint_4
+                        - wam_joint_5
+                        - wam_joint_6
+                        - wam_joint_7
+                # PID parameters from /etc/barrett/wam7w.conf
+                wam_joint_1/pid: {p: 900.0, i: 2.5, d: 10.0, i_clamp_min: -25.0, i_clamp_max: 25.0}
+                wam_joint_2/pid: {p: 2500.0, i: 5.0, d: 20.0, i_clamp_min: -20.0, i_clamp_max: 20.0}
+                wam_joint_3/pid: {p: 600.0, i: 2.0, d: 5.0, i_clamp_min: -15.0, i_clamp_max: 15.0}
+                wam_joint_4/pid: {p: 500.0, i: 0.5, d: 2.0, i_clamp_min: -15.0, i_clamp_max: 15.0}
+                wam_joint_5/pid: {p: 50.0, i: 0.5, d: 0.5, i_clamp_min: -5.0, i_clamp_max: 5.0}
+                wam_joint_6/pid: {p: 50.0, i: 0.5, d: 0.5, i_clamp_min: -5.0, i_clamp_max: 5.0}
+                wam_joint_7/pid: {p: 8.0, i: 0.1, d: 0.05, i_clamp_min: -5.0, i_clamp_max: 5.0}

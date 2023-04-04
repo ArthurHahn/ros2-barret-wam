@@ -3,7 +3,7 @@
 <package format="3">
   <name>wam_make_pile</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Bring-up Barrett WAM</description>
   <maintainer email="arthurr.hahn@gmail.com">ros</maintainer>
   <license>TODO: License declaration</license>
 
