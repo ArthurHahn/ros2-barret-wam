@@ -74,9 +74,9 @@ int main(int argc,char* argv[])
 {
 	rclcpp::init(argc,argv);
 	
-	std::vector<double> p0 {0, 0};
-	std::vector<double> pf {M_PI_4,-M_PI_4};
-	rclcpp::spin(std::make_shared<JointTrajectory>(p0,pf,5.0));
+	std::vector<double> p0 {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	std::vector<double> pf {0.0, -2.0, 0.0, 3.1, 0.0, 0.0, 0.0};
+	rclcpp::spin(std::make_shared<JointTrajectory>(p0,pf,7.0));
 	
 	rclcpp::shutdown();
 	return 0;

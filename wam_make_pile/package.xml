@@ -10,13 +10,14 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   
   <depend>rclcpp</depend>
-  <depend>tf2_kdl</depend>
-  <depend>geometry_msgs</depend>
-  <depend>trajectory_msgs</depend>
-  <depend>orocos_kdl</depend>
-  <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
-  
+  <depend>geometry_msgs</depend>
+  <depend>tf2_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>urdf</depend>
+  <depend>tf2_kdl</depend>
+  <depend>kdl_parser</depend>
+  <depend>orocos_kdl</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

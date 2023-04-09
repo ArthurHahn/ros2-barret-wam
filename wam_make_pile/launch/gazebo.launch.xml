@@ -1,61 +1,64 @@
-<!--******************************************************************************
-	                     Barrett WAM Bringup
-	                     Gazebo Launch File
-          Copyright (C) 2018..2023 Walter Fetter Lages <w.fetter@ieee.org>
+<!--
+  eng100126_trajectories: ROS 2 trajectory generation examples.
 
-        This program is free software: you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version.
+  Copyright (c) 2018..2023 Walter Fetter Lages <w.fetter@ieee.org>
 
-        This program is distributed in the hope that it will be useful, but
-        WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-        Geneal Public License for more details.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-        You should have received a copy of the GNU General Public License
-        along with this program.  If not, see
-        <http://www.gnu.org/licenses/>.
-        
-*******************************************************************************-->
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+    You can also obtain a copy of the GNU General Public License
+    at <http://www.gnu.org/licenses>.
+
+-->
 
 <launch>
+	<arg name="joint" default="false"/>
+	<arg name="controller" default="pid_plus_gravity_controller"/>
 	<arg name="pause" default="true"/>
 	<arg name="gui" default="true"/>
 	<arg name="use_sim_time" default="true"/>
-	<arg name="table" default="true"/>
-	<arg name="bhand" default="true"/>
 	<arg name="ignition" default="false"/>
 
-	<!-- This is the default Barrett WAM Controller, used by libbarrett -->
-	<arg name="controller" default="pid_plus_gravity_controller"/>
-	<arg name="config" default="$(find-pkg-share wam_make_pile)/config/$(var controller).yaml"/>
-	
-	<include unless="$(var ignition)" file="$(find-pkg-share wam_description)/launch/gazebo.launch.xml" >
+	<include file="$(find-pkg-share wam_bringup)/launch/gazebo.launch.xml">
+		<arg name="controller" value="$(var controller)"/>
 		<arg name="pause" value="$(var pause)"/>
 		<arg name="gui" value="$(var gui)"/>
 		<arg name="use_sim_time" value="$(var use_sim_time)"/>
-		<arg name="table" value="$(var table)"/>
-		<arg name="bhand" value="$(var bhand)"/>
-	</include>
-	
-	<include if="$(var ignition)" file="$(find-pkg-share wam_description)/launch/ignition.launch.xml" >
-		<arg name="pause" value="$(var pause)"/>
-		<arg name="gui" value="$(var gui)"/>
-		<arg name="use_sim_time" value="$(var use_sim_time)"/>
-		<arg name="table" value="$(var table)"/>
-		<arg name="bhand" value="$(var bhand)"/>
-	</include>
-	
-	<include file="$(find-pkg-share wam_make_pile)/launch/$(var controller).launch.xml" >
-		<arg name="config" value="$(var config)"/>
-		<arg name="use_sim_time" value="$(var use_sim_time)"/>
-	</include>
+		<arg name="ignition" value="$(var ignition)"/>
+	</include>	
 
-	<group if="$(var bhand)">
-		<arg name="bhand_config" default="$(find-pkg-share bhand_bringup)/config/bhand_controller.yaml"/>
-	
-		<node name="bhand_controller_spawner" pkg="controller_manager" exec="spawner"
-			args="-t position_controllers/JointGroupPositionController -p $(var bhand_config) bhand_controller"/>
-	</group>
+	<node pkg="tf2_ros" exec="static_transform_publisher" name="wam_origin_publisher" args="--frame-id map --child-frame-id world origin_link"/> <!-- Frame de referência -->
+		
+	<group unless="$(var joint)">
+		<node name="trajectory_publisher" pkg="wam_make_pile" exec="pose_trajectory_publisher">
+			<param name="use_sim_time" value="$(var use_sim_time)"/>
+		</node>
+		
+		<node name="trajectory_publisher" pkg="wam_make_pile" exec="joint_trajectory_publisher">
+			<remap from="joint_trajectory_point" to="command"/>
+			<param name="use_sim_time" value="$(var use_sim_time)"/>
+		</node>
+		
+		<node name="ik" pkg="wam_make_pile" exec="pose_stamped2joint" args="wam_link_0 wam_link_7 1 1 0 0 0 0">
+			<remap from="joint_trajectory_point" to="command"/>
+			<param name="use_sim_time" value="$(var use_sim_time)"/>
+		</node>
+		
+		<node name="pose2tf" pkg="wam_make_pile" exec="pose_stamped2tf" args="trajectory"/>
+		
+		<node name="rviz" pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share wam_make_pile)/config/gazebo.rviz">
+			<param name="use_sim_time" value="$(var use_sim_time)"/>
+		</node>
+	</group>	
 </launch>

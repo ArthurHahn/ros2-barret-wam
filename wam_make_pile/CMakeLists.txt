@@ -14,6 +14,8 @@ find_package(trajectory_msgs REQUIRED)
 find_package(orocos_kdl REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(urdf REQUIRED)
+find_package(kdl_parser REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -31,6 +33,7 @@ ament_target_dependencies(
   "geometry_msgs"
   "trajectory_msgs"
   "orocos_kdl"
+  "kdl_parser"
 )
 
 install(TARGETS pose_trajectory_publisher
@@ -53,6 +56,42 @@ ament_target_dependencies(
 install(TARGETS joint_trajectory_publisher
   DESTINATION lib/${PROJECT_NAME})
   
+  
+add_executable(pose_stamped2joint src/pose_stamped2joint.cpp)
+target_include_directories(pose_stamped2joint PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(pose_stamped2joint PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  pose_stamped2joint
+  "rclcpp"
+  "std_msgs"
+  "geometry_msgs"
+  "tf2_msgs"
+  "trajectory_msgs"
+  "urdf"
+  "tf2_kdl"
+  "kdl_parser"
+  "orocos_kdl"
+)
+
+add_executable(pose_stamped2tf src/pose_stamped2tf.cpp)
+target_include_directories(pose_stamped2tf PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(pose_stamped2tf PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+ament_target_dependencies(
+  pose_stamped2tf
+  "rclcpp"
+  "geometry_msgs"
+  "tf2_msgs"
+  "tf2_kdl"
+)
+
+install(TARGETS pose_stamped2joint pose_stamped2tf
+  DESTINATION lib/${PROJECT_NAME})
+
+
 install(DIRECTORY config launch
 	DESTINATION share/${PROJECT_NAME}
 )  
@@ -62,8 +101,11 @@ install(PROGRAMS
 	scripts/step.sh
 	scripts/step_home.sh
 	scripts/step_zero.sh
+	scripts/spawn_coke_can.sh
 	DESTINATION lib/${PROJECT_NAME}
 )
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
