@@ -143,7 +143,10 @@ void PoseTrajectory::timerCB(void) const
 	RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"y publicado: " << poseMsg.pose.position.y);
 	RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"z publicado: " << poseMsg.pose.position.z);
 	
-	posePublisher_->publish(poseMsg);
+	if(t>=trajectory_.Duration())
+	{
+		posePublisher_->publish(poseMsg);
+	}
 }
 
 int main(int argc,char* argv[])

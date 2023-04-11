@@ -66,9 +66,12 @@ void JointTrajectory::timerCB(void) const
 	double sec;
 	jointMsg.time_from_start.nanosec=modf(t,&sec)*1e9;
 	jointMsg.time_from_start.sec=sec;
-
-	jointPublisher_->publish(jointMsg);
-}
+	
+	if(t>=trajectory_.Duration())
+	{
+		jointPublisher_->publish(poseMsg);
+	}
+}	
 
 int main(int argc,char* argv[])
 {
