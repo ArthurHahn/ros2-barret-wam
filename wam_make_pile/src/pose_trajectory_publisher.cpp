@@ -139,13 +139,15 @@ void PoseTrajectory::timerCB(void) const
 	tf2::Stamped<KDL::Frame> pose(trajectory_.Pos(t),tf2::get_now(),"map");
 	auto poseMsg=tf2::toMsg(pose);
 	
-	RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"x publicado: " << poseMsg.pose.position.x);
-	RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"y publicado: " << poseMsg.pose.position.y);
-	RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"z publicado: " << poseMsg.pose.position.z);
+	//RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"x publicado: " << poseMsg.pose.position.x);
+	//RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"y publicado: " << poseMsg.pose.position.y);
+	//RCLCPP_ERROR_STREAM(rclcpp::get_logger("pose_trajectory_publisher"),"z publicado: " << poseMsg.pose.position.z);
+	posePublisher_->publish(poseMsg);
 	
 	if(t>=trajectory_.Duration())
 	{
-		posePublisher_->publish(poseMsg);
+		RCLCPP_ERROR_STREAM(get_logger(), "END OF TRAJECTORY");
+		timer_->cancel();
 	}
 }
 

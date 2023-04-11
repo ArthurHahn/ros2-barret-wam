@@ -67,9 +67,11 @@ void JointTrajectory::timerCB(void) const
 	jointMsg.time_from_start.nanosec=modf(t,&sec)*1e9;
 	jointMsg.time_from_start.sec=sec;
 	
-	if(t>=trajectory_.Duration())
+	jointPublisher_->publish(jointMsg);
+	
+	if(t>=velocityProfile_[0].Duration())
 	{
-		jointPublisher_->publish(poseMsg);
+		timer_->cancel();
 	}
 }	
 
